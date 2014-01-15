@@ -12,6 +12,7 @@ Example
 See it in action:
 
 .. code-block::
+
     >>> from sushi_salutations import get_sushi_salutations
     >>> get_sushi_salutations(lines=3)
         ['nori-noshers', 'ebi-enjoyers', 'engawa-experts']
