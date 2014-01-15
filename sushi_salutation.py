@@ -43,7 +43,7 @@ class Items(object):
 
 class SushiSalutation(object):
     """
-    Randomly chose sushi related salutations.
+    Randomly choose sushi related salutations.
 
     Attributes
     ----------
