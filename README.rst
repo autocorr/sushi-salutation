@@ -11,7 +11,7 @@ Example
 -------
 See it in action:
 
-.. code-block::
+.. code-block:: python
 
     >>> from sushi_salutations import get_sushi_salutations
     >>> get_sushi_salutations(lines=3)
