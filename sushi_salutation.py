@@ -3,6 +3,7 @@
 
 import random
 import string
+from collections import OrderedDict
 
 
 __all__ = ['SushiSalutation']
@@ -24,21 +25,21 @@ class Items(object):
     def _get_entries(self):
         with open(self.filen, 'r') as handle:
             self.entries = self._clean_lines(handle)
-        self.valid_start_letters = set(s[0] for s in self.entries)
+        self.valid_start_chars = set(c[0] for c in self.entries)
 
     @staticmethod
     def _clean_lines(handle):
         # strip new line characters
-        entries = [s.strip() for s in handle.readlines()]
+        entries = [c.strip() for c in handle.readlines()]
         # remove empty lines
         entries = filter(None, entries)
         return entries
 
-    def select_on_letter(self, letter):
-        assert letter in string.ascii_lowercase
-        if letter not in self.valid_start_letters:
+    def select_on_char(self, char):
+        assert char in string.ascii_lowercase
+        if char not in self.valid_start_chars:
             raise NoMatchError
-        return [s for s in self.entries if s.startswith(letter)]
+        return [c for c in self.entries if c.startswith(char)]
 
 
 class SushiSalutation(object):
@@ -71,17 +72,28 @@ class SushiSalutation(object):
         self.saluts = []
 
     @staticmethod
-    def _get_rand_letter():
+    def _get_rand_char():
+        # TODO only make random choices among valid starting chars for both
+        # lists
         return random.choice(string.ascii_lowercase)
 
-    def get_saluts(self):
+    def get_saluts(self, letter=None):
+        """
+        Parameters
+        ----------
+        letter : string, default None
+            Lower-case letter to select combinations. If `None` then
+            a random letter is chosen for each combination.
+        """
+        # TODO raise error if chosen letter is not in valid combinations
         if self.saluts:
             self.saluts = []
         while len(self.saluts) < self.lines:
             try:
-                letter = self._get_rand_letter()
-                l_foods = self.foods.select_on_letter(letter=letter)
-                l_recip = self.recips.select_on_letter(letter=letter)
+                if letter is None:
+                    letter = self._get_rand_char()
+                l_foods = self.foods.select_on_char(char=letter)
+                l_recip = self.recips.select_on_char(char=letter)
             except NoMatchError:
                 pass
             else:
@@ -90,6 +102,31 @@ class SushiSalutation(object):
                 salut = '-'.join([food, recip])
                 self.saluts.append(salut)
         return self.saluts
+
+    def calc_combs(self, per_letter=False):
+        """
+        Parameters
+        ----------
+        per_letter : bool
+            Print combinations per letter?
+
+        Attributes
+        ----------
+        combos : OrderedDict
+        total_combos : number
+        """
+        combos = OrderedDict()
+        for char in self.foods.valid_start_chars:
+            if char in self.recips.valid_start_chars:
+                char_combo = len(self.foods.select_on_char(char)) * \
+                               len(self.recips.select_on_char(char))
+                combos[char] = char_combo
+        self.combos = combos
+        self.total_combos = sum(combos.values())
+        if per_letter:
+            for char, counts in combos.items():
+                print '{0}: {1}'.format(char, counts)
+        print 'Total number of combinations: {0}'.format(self.total_combos)
 
 
 def get_sushi_salutations(lines):
