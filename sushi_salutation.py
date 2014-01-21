@@ -73,8 +73,6 @@ class SushiSalutation(object):
 
     @staticmethod
     def _get_rand_char():
-        # TODO only make random choices among valid starting chars for both
-        # lists
         return random.choice(self.valid_chars)
 
     def get_saluts(self, letter=None):
@@ -85,7 +83,6 @@ class SushiSalutation(object):
             Lower-case letter to select combinations. If `None` then
             a random letter is chosen for each combination.
         """
-        # TODO raise error if chosen letter is not in valid combinations
         if self.saluts:
             self.saluts = []
         while len(self.saluts) < self.lines:
