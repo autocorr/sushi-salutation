@@ -59,7 +59,7 @@ class SushiSalutation(object):
     """
     foods = Items(filen=FOOD_FILEN)
     recips = Items(filen=RECIP_FILEN)
-    valid_chars = foods.valid_start_chars.union(recips.valid_start_chars)
+    valid_chars = list(foods.valid_start_chars.union(recips.valid_start_chars))
 
     def __init__(self, lines):
         """
@@ -71,8 +71,7 @@ class SushiSalutation(object):
         self.lines = lines
         self.saluts = []
 
-    @staticmethod
-    def _get_rand_char():
+    def _get_rand_char(self):
         return random.choice(self.valid_chars)
 
     def get_saluts(self, letter=None):
